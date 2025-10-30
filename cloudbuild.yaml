@@ -58,7 +58,8 @@ steps:
     entrypoint: 'gcloud'
     args:
       - 'artifacts'
-      - 'nuget'
+#      - 'nuget'
+      - 'generic'
       - 'push'
       - './artifacts/*.nupkg'
       - '--repository=ps-course-nuget-repo' # e.g., 'my-nuget-repo'
