@@ -3,7 +3,7 @@ steps:
   # Use the official .NET 8 SDK image from Microsoft's container registry.
   - name: 'mcr.microsoft.com/dotnet/sdk:8.0'
     entrypoint: 'dotnet'
-    args: ['restore', 'PSCourseLibrary/PSCourseLibrary.csproj']
+    args: ['restore', '${_Project_Name}/${_Project_Name}.csproj']
     id: 'restore'
 
   # 2. Compile source code
@@ -13,7 +13,7 @@ steps:
     entrypoint: 'dotnet'
     args:
       - 'build'
-      - 'PSCourseLibrary/PSCourseLibrary.csproj'
+      - '${_Project_Name}/${_Project_Name}.csproj'
       - '--configuration'
       - 'Release'
       - '--no-restore'
@@ -28,7 +28,7 @@ steps:
     entrypoint: 'dotnet'
     args:
       - 'test'
-      - 'PSCourseLibrary.Tests/PSCourseLibrary.Tests.csproj' # Uncomment and update if you have a test project
+      - '${_Project_Name}.Tests/${_Project_Name}.Tests.csproj' # Uncomment and update if you have a test project
       - '--configuration'
       - 'Release'
 #      - '--no-build'
@@ -42,7 +42,7 @@ steps:
     entrypoint: 'dotnet'
     args:
       - 'pack'
-      - 'PSCourseLibrary/PSCourseLibrary.csproj'
+      - '${_Project_Name}/${_Project_Name}.csproj'
       - '--configuration'
       - 'Release'
       - '--output'
@@ -62,18 +62,21 @@ steps:
       - |
         set -e
         # Extract version from the .csproj file using grep and sed
-        VERSION=$$(grep '<PackageVersion>' PSCourseLibrary/PSCourseLibrary.csproj | sed 's/.*<PackageVersion>\(.*\)<\/PackageVersion>.*/\1/')
+        VERSION=$$(grep '<PackageVersion>' ${_Project_Name}/${_Project_Name}.csproj | sed 's/.*<PackageVersion>\(.*\)<\/PackageVersion>.*/\1/')
         echo "Found package version: $$VERSION"
 
         # Upload the package using the extracted version
         gcloud artifacts generic upload \
-          --source=./artifacts/PSCourseLibrary.$$VERSION.nupkg \
+          --source=./artifacts/${_Project_Name}.$$VERSION.nupkg \
           --repository=ps-course-nuget-repo \
           --location=us-central1 \
           --package=PSCourseLibrary \
           --version=$$VERSION
     id: 'upload'
     waitFor: ['pack']
+
+substitutions:
+  _Project_Name: PSCourseLibrary
 
 options:
   logging: CLOUD_LOGGING_ONLY
