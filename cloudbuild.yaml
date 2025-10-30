@@ -3,7 +3,7 @@ steps:
   # Use the official .NET 8 SDK image from Microsoft's container registry.
   - name: 'mcr.microsoft.com/dotnet/sdk:8.0'
     entrypoint: 'dotnet'
-    args: ['restore', '${_Project_Name}/${_Project_Name}.csproj']
+    args: ['restore', '${_PROJECT_NAME}/${_PROJECT_NAME}.csproj']
     id: 'restore'
 
   # 2. Compile source code
@@ -13,7 +13,7 @@ steps:
     entrypoint: 'dotnet'
     args:
       - 'build'
-      - '${_Project_Name}/${_Project_Name}.csproj'
+      - '${_PROJECT_NAME}/${_PROJECT_NAME}.csproj'
       - '--configuration'
       - 'Release'
       - '--no-restore'
@@ -28,7 +28,7 @@ steps:
     entrypoint: 'dotnet'
     args:
       - 'test'
-      - '${_Project_Name}.Tests/${_Project_Name}.Tests.csproj' # Uncomment and update if you have a test project
+      - '${_PROJECT_NAME}.Tests/${_PROJECT_NAME}.Tests.csproj' # Uncomment and update if you have a test project
       - '--configuration'
       - 'Release'
 #      - '--no-build'
@@ -42,7 +42,7 @@ steps:
     entrypoint: 'dotnet'
     args:
       - 'pack'
-      - '${_Project_Name}/${_Project_Name}.csproj'
+      - '${_PROJECT_NAME}/${_PROJECT_NAME}.csproj'
       - '--configuration'
       - 'Release'
       - '--output'
@@ -62,12 +62,12 @@ steps:
       - |
         set -e
         # Extract version from the .csproj file using grep and sed
-        VERSION=$$(grep '<PackageVersion>' ${_Project_Name}/${_Project_Name}.csproj | sed 's/.*<PackageVersion>\(.*\)<\/PackageVersion>.*/\1/')
+        VERSION=$$(grep '<PackageVersion>' ${_PROJECT_NAME}/${_PROJECT_NAME}.csproj | sed 's/.*<PackageVersion>\(.*\)<\/PackageVersion>.*/\1/')
         echo "Found package version: $$VERSION"
 
         # Upload the package using the extracted version
         gcloud artifacts generic upload \
-          --source=./artifacts/${_Project_Name}.$$VERSION.nupkg \
+          --source=./artifacts/${_PROJECT_NAME}.$$VERSION.nupkg \
           --repository=ps-course-nuget-repo \
           --location=us-central1 \
           --package=PSCourseLibrary \
@@ -76,7 +76,7 @@ steps:
     waitFor: ['pack']
 
 substitutions:
-  _Project_Name: PSCourseLibrary
+  _PROJECT_NAME: PSCourseLibrary
 
 options:
   logging: CLOUD_LOGGING_ONLY
