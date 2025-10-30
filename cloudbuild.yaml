@@ -65,3 +65,7 @@ steps:
       - '--location=us-central1' # e.g., 'us-central1'
     id: 'upload'
     waitFor: ['pack']
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
