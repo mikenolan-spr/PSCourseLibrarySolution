@@ -4,6 +4,8 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSCourseLibrary", "PSCourseLibrary\PSCourseLibrary.csproj", "{21609BEE-7706-3CF9-6A11-5A819E54004C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSCourseLibrary.Tests", "PSCourseLibrary.Tests\PSCourseLibrary.Tests.csproj", "{8A8D7879-5DBA-4A4E-8C48-401A5C2A4376}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,6 +16,10 @@ Global
 		{21609BEE-7706-3CF9-6A11-5A819E54004C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21609BEE-7706-3CF9-6A11-5A819E54004C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21609BEE-7706-3CF9-6A11-5A819E54004C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A8D7879-5DBA-4A4E-8C48-401A5C2A4376}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A8D7879-5DBA-4A4E-8C48-401A5C2A4376}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A8D7879-5DBA-4A4E-8C48-401A5C2A4376}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A8D7879-5DBA-4A4E-8C48-401A5C2A4376}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
