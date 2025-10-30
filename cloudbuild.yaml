@@ -1,0 +1,67 @@
+steps:
+  # 1. Restore dependencies
+  # Use the official .NET 8 SDK image from Microsoft's container registry.
+  - name: 'mcr.microsoft.com/dotnet/sdk:8.0'
+    entrypoint: 'dotnet'
+    args: ['restore', 'PSCourseLibrary/PSCourseLibrary.csproj']
+    id: 'restore'
+
+  # 2. Compile source code
+  # This step builds the project in Release configuration.
+  # The --no-restore flag is used because dependencies were restored in the previous step.
+  - name: 'mcr.microsoft.com/dotnet/sdk:8.0'
+    entrypoint: 'dotnet'
+    args:
+      - 'build'
+      - 'PSCourseLibrary/PSCourseLibrary.csproj'
+      - '--configuration'
+      - 'Release'
+      - '--no-restore'
+    id: 'build'
+    waitFor: ['restore']
+
+  # 3. Execute unit tests
+  # This step runs tests. I've assumed your test project is in a directory
+  # named 'PSCourseLibrary.Tests'. You should adjust the path if it's different.
+  # The --no-build flag is used because the project was already built.
+  - name: 'mcr.microsoft.com/dotnet/sdk:8.0'
+    entrypoint: 'dotnet'
+    args:
+      - 'test'
+      # - 'PSCourseLibrary.Tests/PSCourseLibrary.Tests.csproj' # Uncomment and update if you have a test project
+      - '--configuration'
+      - 'Release'
+      - '--no-build'
+    id: 'test'
+    waitFor: ['build']
+
+  # 4. Create NuGet package
+  # This step packages the library into a .nupkg file.
+  # The output will be placed in the 'artifacts' directory.
+  - name: 'mcr.microsoft.com/dotnet/sdk:8.0'
+    entrypoint: 'dotnet'
+    args:
+      - 'pack'
+      - 'PSCourseLibrary/PSCourseLibrary.csproj'
+      - '--configuration'
+      - 'Release'
+      - '--output'
+      - './artifacts'
+      - '--no-build'
+    id: 'pack'
+    waitFor: ['test']
+
+  # 5. Upload NuGet package to Artifact Registry
+  # This step uses the gcloud CLI to push the NuGet package.
+  # You need to replace the placeholder values for your project, region, and repository.
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'artifacts'
+      - 'nuget'
+      - 'push'
+      - './artifacts/*.nupkg'
+      - '--repository=YOUR_NUGET_REPO_NAME' # e.g., 'my-nuget-repo'
+      - '--location=us-central1' # e.g., 'us-central1'
+    id: 'upload'
+    waitFor: ['pack']
