@@ -31,7 +31,7 @@ steps:
       - 'PSCourseLibrary.Tests/PSCourseLibrary.Tests.csproj' # Uncomment and update if you have a test project
       - '--configuration'
       - 'Release'
-      - '--no-build'
+#      - '--no-build'
     id: 'test'
     waitFor: ['build']
 
