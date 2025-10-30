@@ -28,7 +28,7 @@ steps:
     entrypoint: 'dotnet'
     args:
       - 'test'
-      # - 'PSCourseLibrary.Tests/PSCourseLibrary.Tests.csproj' # Uncomment and update if you have a test project
+      - 'PSCourseLibrary.Tests/PSCourseLibrary.Tests.csproj' # Uncomment and update if you have a test project
       - '--configuration'
       - 'Release'
       - '--no-build'
