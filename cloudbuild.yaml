@@ -62,6 +62,7 @@ steps:
       - 'generic'
       - 'upload'
       - '--source=./artifacts/PSCourseLibrary.1.0.0.nupkg'
+      - '--version=1.0.0'
       - '--package=PSCourseLibrary'
       - '--repository=ps-course-nuget-repo' # e.g., 'my-nuget-repo'
       - '--location=us-central1' # e.g., 'us-central1'
