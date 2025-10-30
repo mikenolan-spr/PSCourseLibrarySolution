@@ -51,21 +51,27 @@ steps:
     id: 'pack'
     waitFor: ['test']
 
-  # 5. Upload NuGet package to Artifact Registry
-  # This step uses the gcloud CLI to push the NuGet package.
-  # You need to replace the placeholder values for your project, region, and repository.
+  # 5. Extract version and upload NuGet package to Artifact Registry
+  # This step runs a script to:
+  # 1. Read the <PackageVersion> from the .csproj file.
+  # 2. Use that version to upload the correct .nupkg file to a generic repository.
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'gcloud'
+    entrypoint: 'bash'
     args:
-      - 'artifacts'
-#      - 'nuget'
-      - 'generic'
-      - 'upload'
-      - '--source=./artifacts/PSCourseLibrary.*.nupkg'
-      - '--version=1.0.0'
-      - '--package=PSCourseLibrary'
-      - '--repository=ps-course-nuget-repo' # e.g., 'my-nuget-repo'
-      - '--location=us-central1' # e.g., 'us-central1'
+      - '-c'
+      - |
+        set -e
+        # Extract version from the .csproj file using grep and sed
+        VERSION=$$(grep '<PackageVersion>' PSCourseLibrary/PSCourseLibrary.csproj | sed 's/.*<PackageVersion>\(.*\)<\/PackageVersion>.*/\1/')
+        echo "Found package version: $$VERSION"
+
+        # Upload the package using the extracted version
+        gcloud artifacts generic upload \
+          --source=./artifacts/PSCourseLibrary.$$VERSION.nupkg \
+          --repository=ps-course-nuget-repo \
+          --location=us-central1 \
+          --package=PSCourseLibrary \
+          --version=$$VERSION
     id: 'upload'
     waitFor: ['pack']
 
